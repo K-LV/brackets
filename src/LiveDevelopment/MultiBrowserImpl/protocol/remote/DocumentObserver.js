@@ -44,6 +44,7 @@
             scripts: {},
             stylesheets: {}
         };
+        console.log("related(): ", rel);
         var i;
         // iterate on document scripts (HTMLCollection doesn't provide forEach iterator).
         for (i = 0; i < _document.scripts.length; i++) {
@@ -130,6 +131,7 @@
                 var loadInterval = setInterval(function () {
                     var i;
                     for (i = 0; i < document.styleSheets.length; i++) {
+                        debugger
                         if (document.styleSheets[i].href === href) {
                             //clear interval
                             clearInterval(loadInterval);
@@ -218,10 +220,12 @@
     
     /* process related docs added */
     function _onNodesAdded(nodes) {
+        console.log("_onNodesAdded: ", nodes);
         var i;
         for (i = 0; i < nodes.length; i++) {
             //check for Javascript files
             if (Utils.isExternalScript(nodes[i])) {
+                console.log("ScriptAdded");
                 _transport.send(JSON.stringify({
                     method: 'ScriptAdded',
                     src: nodes[i].src
@@ -229,6 +233,7 @@
             }
             //check for stylesheets
             if (Utils.isExternalStylesheet(nodes[i])) {
+                console.log("StylesheetAdded");
                 CSS.checkForStylesheetLoaded(nodes[i].href);
             }
         }
@@ -290,12 +295,14 @@
      * @param {object} transport Live development transport connection
      */
     function start(document, transport) {
+        console.log("start: ", document, transport);
         _transport = transport;
         _document = document;
         // start listening to node changes
         _enableListeners();
         
         var rel = related();
+        console.log("related: ", rel);
         
         // send the current status of related docs. 
         _transport.send(JSON.stringify({

@@ -317,6 +317,8 @@ define(function (require, exports, module) {
                     liveDoc.on("updateDoc", function (event, url) {
                         var path = _server.urlToPath(url),
                             doc = getLiveDocForPath(path);
+                            console.log("path: ", path);
+                            console.log("doc: ", doc);
                         doc._updateBrowser();
                     });
                 }
@@ -567,6 +569,7 @@ define(function (require, exports, module) {
                         var relatedDocs = msg.related;
                         var docs = Object.keys(relatedDocs.stylesheets);
                         docs.forEach(function (url) {
+                            console.log("url 571: ", url);
                             _styleSheetAdded(null, url, relatedDocs.stylesheets[url]);
                         });
                     })

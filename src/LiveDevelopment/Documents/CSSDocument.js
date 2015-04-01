@@ -215,16 +215,19 @@ define(function CSSDocumentModule(require, exports, module) {
 
     /** Triggered on cursor activity of the editor */
     CSSDocument.prototype.onCursorActivity = function onCursorActivity(event, editor) {
+        console.log("onCursorActivity");
         this.updateHighlight();
     };
 
     /** Triggered whenever the Document is edited */
     CSSDocument.prototype.onChange = function onChange(event, editor, change) {
+        console.log("onChange");
         this._updateBrowser();
     };
 
     /** Triggered if the Document's file is deleted */
     CSSDocument.prototype.onDeleted = function onDeleted(event, editor, change) {
+        console.log("onDeleted");
         // clear the CSS
         CSSAgent.clearCSSForDocument(this.doc);
 

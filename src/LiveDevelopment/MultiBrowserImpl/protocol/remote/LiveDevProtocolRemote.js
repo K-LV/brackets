@@ -68,6 +68,7 @@
             }
             // get handlers for msg.method
             msgHandlers = this.handlers[msg.method];
+            console.log("msgHandlers: ", msgHandlers);
             
             if (msgHandlers && msgHandlers.length > 0) {
                 // invoke handlers with the received message
@@ -263,11 +264,13 @@
         _protocolHandler: {},
         
         enable: function () {
+            console.log("enable _Brackets_LiveDev_ProtocolManager");
             transport.setCallbacks(this._protocolHandler);
             transport.enable();
         },
         
         onConnect: function () {
+            console.log("onConnect _Brackets_LiveDev_ProtocolManager");
             this._documentObserver.start(window.document, transport);
         },
         
@@ -312,6 +315,7 @@
         },
         
         setDocumentObserver: function (documentOberver) {
+            console.log("setDocumentObserver", documentOberver);
             if (!documentOberver) {
                 return;
             }

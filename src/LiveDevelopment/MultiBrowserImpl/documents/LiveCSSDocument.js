@@ -49,7 +49,9 @@ define(function LiveCSSDocumentModule(require, exports, module) {
     var _               = require("thirdparty/lodash"),
         CSSUtils        = require("language/CSSUtils"),
         EventDispatcher = require("utils/EventDispatcher"),
-        LiveDocument    = require("LiveDevelopment/MultiBrowserImpl/documents/LiveDocument");
+        LiveDocument    = require("LiveDevelopment/MultiBrowserImpl/documents/LiveDocument"),
+        BlobUtils       = require("filesystem/impls/filer/BlobUtils"),
+        CSSAgent        = require("LiveDevelopment/Agents/CSSAgent");
 
     /** 
      * @constructor
@@ -96,10 +98,12 @@ define(function LiveCSSDocumentModule(require, exports, module) {
     LiveCSSDocument.prototype._updateBrowser = function () {
         var i;
         for (i = 0; i < this.roots.length; i++) {
-            if (this.doc.url !== this.roots[i].toString()) {
+            console.log("roots: ", this.roots[i].toString());
+            console.log("BlobUtils: ", BlobUtils.getFilename(this.roots[i].toString()));
+            if (this.doc.url !== BlobUtils.getFilename(this.roots[i].toString())) {
                 // if it's not directly included through <link>,
                 // reload the original doc
-                this.trigger("updateDoc", this.roots[i]);
+                this.trigger("updateDoc", BlobUtils.getFilename(this.roots[i].toString()));
             } else {
                 this.protocol.setStylesheetText(this.doc.url, this.doc.getText());
             }
@@ -158,8 +162,9 @@ define(function LiveCSSDocumentModule(require, exports, module) {
      * @param {$.Event} event
      */
     LiveCSSDocument.prototype.onDeleted = function (event) {
+        console.log("deleted");
         // TODO Need to add protocol API to remove the stylesheet from the document.
-        //CSSAgent.clearCSSForDocument(this.doc);
+        CSSAgent.clearCSSForDocument(this.doc);
 
         // shut down, since our Document is now dead
         this.close();

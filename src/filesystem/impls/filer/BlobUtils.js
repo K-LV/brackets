@@ -30,6 +30,8 @@ define(function (require, exports, module) {
             blobURLs[filename] = url;
             paths[url] = filename;
 
+            console.log("cache after: ", blobURLs, paths);
+
             callback(err);
         });
     }
