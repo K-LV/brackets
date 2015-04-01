@@ -5,12 +5,12 @@ define(function (require, exports, module) {
     "use strict";
 
     var Handlers = require("filesystem/impls/filer/lib/handlers");
+    var Content = require("filesystem/impls/filer/lib/content");
 
     // BlobUtils provides an opportunistic cache for BLOB Object URLs
     // which can be looked-up synchronously.
 
-    var Filer = require("filesystem/impls/filer/BracketsFiler");
-    var Path  = Filer.Path;
+    var Path  = require("filesystem/impls/filer/BracketsFiler").Path;
 
     // 2-way cache for blob URL to path for looking up either way:
     // * paths - paths keyed on blobUrls
@@ -19,19 +19,18 @@ define(function (require, exports, module) {
     var blobURLs = {};
 
     // Generate a BLOB URL for the given filename and cache it
-    function cache(filename, callback) {
+    function cache(filename, content) {
         filename = Path.normalize(filename);
 
-        Handlers.handleFile(filename, function(err, url) {
-            // If there's an existing entry for this, remove it.
-            remove(filename);
+        var url = Handlers.handleFile(filename, content);
 
-            // Now make a new set of cache entries
-            blobURLs[filename] = url;
-            paths[url] = filename;
+        // If there's an existing entry for this, remove it.
+        remove(filename);
 
-            callback(err);
-        });
+        // Now make a new set of cache entries
+        blobURLs[filename] = url;
+        paths[url] = filename;
+        console.log("cached: ", url);
     }
 
     // Remove the cached BLOB URL for the given filename
@@ -73,6 +72,15 @@ define(function (require, exports, module) {
         return url;
     }
 
+    // Given a filename, lookup the cached BLOB URL.
+    // If an entry for the filename is not found in the cache, we return a
+    // BLOB URL indicating an HTTP 404 - Not Found
+    function getUrlStrict(filename) {
+        var url = getUrl(filename);
+
+        return url === filename ? Content.HttpNotFound(filename) : url;
+    }
+
     // Given a BLOB URL, lookup the associated filename
     function getFilename(blobUrl) {
         var filename = paths[blobUrl];
@@ -90,5 +98,6 @@ define(function (require, exports, module) {
     exports.remove = remove;
     exports.rename = rename;
     exports.getUrl = getUrl;
+    exports.getUrlStrict = getUrlStrict;
     exports.getFilename = getFilename;
 });

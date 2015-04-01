@@ -112,6 +112,20 @@ define(function (require, exports, module) {
         toURL: function(data, type) {
             var blob = new Blob([data], {type: type});
             return URL.createObjectURL(blob);
+        },
+
+        HttpNotFound: function(path) {
+            var html = '<!DOCTYPE html>' +
+                       '<html><head>' +
+                       '<title>404 Not Found</title>' +
+                       '</head><body>' +
+                       '<h1>Not Found</h1>' +
+                       '<p>The requested URL ' + path + ' was not found on this server.</p>' +
+                       '<hr>' +
+                       '<address>nohost/0.0.1 (Web) Server</address>' +
+                       '</body></html>';
+
+            return this.toURL(html, 'text/html');
         }
     };
 });
