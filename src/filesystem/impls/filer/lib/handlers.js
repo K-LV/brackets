@@ -12,6 +12,7 @@ define(function (require, exports, module) {
      * Send the raw file, making it somewhat more readable
      */
     function handleFile(path, data) {
+        console.log("handleFile");
         var ext = Path.extname(path);
         var mimeType = Content.mimeFromExt(ext);
 

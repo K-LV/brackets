@@ -104,6 +104,7 @@ console.log("For " + path, " rewriting to " + element.href);
     };
 
     function rewrite(path, html) {
+        console.log("rewrite: ", path);
         var rewriter = new HTMLRewriter(path, html);
 
         rewriter.links();
